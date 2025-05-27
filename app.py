@@ -6,23 +6,13 @@ import json
 cachedir = pathlib.Path('cache')
 cachedir.mkdir(exist_ok=True)
 
-with open(cachedir / 'example_prediction.json', 'r') as f:
+with open(cachedir / 'resources' / 'example_prediction.json', 'r') as f:
     propjson = json.loads(f.read())
 
 proptitles = [prop.get('property').get('title') for prop in propjson]
-propfile = cachedir / 'predicted_property_names.txt'
+propfile = cachedir / 'resources' / 'predicted_property_names.txt'
 propfile.write_text('\n'.join(proptitles))
 
-#%% GENERATE PROMPTS FOR TITLES
-#
-# ## cosmetics
-# prompt_cosmetics = f"""I have selected chemicals that are actively used in the cosmetics industry.
-# please select properties from the below list that would be interesting to toxicologists
-# evaluating these compounds."""
-# prompt_cosmetics = prompt_cosmetics + '\n\n' + '\n'.join(proptitles)
-# prompt_cosmetics = prompt_cosmetics + '\n\n' + "pick ~100 of the most cosmetics relevant properties and output one per line and nothing else."
-# prompt_cosmetics_file = cachedir / 'projects' / 'cosmetics' / 'property_prompt.txt'
-# prompt_cosmetics_file.write_text(prompt_cosmetics)
 
 #%% Fuzzy match relevant properties for each project to the predicted property names
 def fuzzy_match_properties(input_path,output_path):
@@ -43,16 +33,12 @@ def fuzzy_match_properties(input_path,output_path):
     output_path.write_text('\n'.join(matched_properties))
     return list(set(matched_properties))
 
-# project='hepatotoxic'
-# project='nephrotoxic'
-projects = ['nephrotoxic']
-# projects = ['hepatotoxic']
-# projects = ['dev-neurotoxic']
-# projects = ['nephrotoxic','dev-neurotoxic']
+
+projects = ['hepatotoxicity','nephrotoxicity','developmental_neurotoxicity']
 
 # for project in projects:
 #     fuzzy_match_properties(
-#         input_path=cachedir / 'projects' / project / 'claude_relevant_properties.txt',
+#         input_path=cachedir / 'projects' / project / 'chatgpt_selected_features.txt',
 #         output_path=cachedir / 'projects' / project / 'matched_properties.txt')
 
 # # parse the chemicals
@@ -89,9 +75,8 @@ projects = ['nephrotoxic']
 #         output_path= outdir,
 #         max_features=150
 #     )
-# input_path=cachedir / 'projects' / project / 'predictions.parquet'
-# output_path= outdir
-runtag = 'run250527'
+
+runtag = 'pilot'
 # build heatmaps
 import toxindex.build_heatmap as build_heatmap
 for project in projects:
@@ -125,28 +110,25 @@ for project in projects:
         feature_selection_method= feature_selection_method
     )
 
-# input_path=cachedir / 'projects' / project / 'predictions.parquet'
-# # 
-# feature_selection_method = 'mutual_info'
-# import toxindex.build_stripchart as build_stripchart
-# for project in projects:
-#     outdir = cachedir / 'projects' / project / 'stripchart_dir'
-#     outdir.mkdir(exist_ok=True)
-#     agg_func='median'
-#     build_stripchart.build_stripchart(
-#         input_path=cachedir / 'projects' / project / 'predictions.parquet',
-#         output_path=outdir / f"{agg_func}_{feature_selection_method}_stripchart_{runtag}.png",
-#         agg_func=agg_func,
-#         feature_selection_method= feature_selection_method
-#     )
+ 
+ # build stripchart
+feature_selection_method = 'mutual_info'
+import toxindex.build_stripchart as build_stripchart
+for project in projects:
+    outdir = cachedir / 'projects' / project / 'stripchart_dir'
+    outdir.mkdir(exist_ok=True)
+    agg_func='median'
+    build_stripchart.build_stripchart(
+        input_path=cachedir / 'projects' / project / 'predictions.parquet',
+        output_path=outdir / f"{agg_func}_{feature_selection_method}_stripchart_{runtag}.png",
+        agg_func=agg_func,
+        feature_selection_method= feature_selection_method
+    )
 
-#     agg_func='mean'
-#     build_stripchart.build_stripchart(
-#         input_path=cachedir / 'projects' / project / 'predictions.parquet',
-#         output_path=outdir / f"{agg_func}_{feature_selection_method}_stripchart_{runtag}.png",
-#         agg_func=agg_func,
-#         feature_selection_method= feature_selection_method
-#     )
-
-# input_path=cachedir / 'projects' / project / 'predictions.parquet'
-# output_path=outdir / f"{agg_func}_stripchart_morechem_lessfeat.png"
+    agg_func='mean'
+    build_stripchart.build_stripchart(
+        input_path=cachedir / 'projects' / project / 'predictions.parquet',
+        output_path=outdir / f"{agg_func}_{feature_selection_method}_stripchart_{runtag}.png",
+        agg_func=agg_func,
+        feature_selection_method= feature_selection_method
+    )

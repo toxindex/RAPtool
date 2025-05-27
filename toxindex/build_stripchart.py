@@ -32,7 +32,6 @@ def build_stripchart(input_path, output_path, agg_func, feature_selection_method
     # Set the style to dark background
     plt.style.use('dark_background')
 
-    # gemini_props = pd.read_csv(pathlib.Path('cache/resources/gemini-properties.txt'), header=None)
     df_allfeat = pd.read_parquet(input_path)
 
     # feature_path = input_path.parent / 'matched_properties.txt'
@@ -61,7 +60,7 @@ def build_stripchart(input_path, output_path, agg_func, feature_selection_method
     unique_classes = sorted(df['classification'].unique())  # sorted for consistency
 
     # Load colors from YAML
-    with open("cache/resources/colormap.yaml", "r") as f:
+    with open("config/default.yaml", "r") as f:
         config = yaml.safe_load(f)
 
     colors_hex = config['colors']
@@ -70,33 +69,9 @@ def build_stripchart(input_path, output_path, agg_func, feature_selection_method
     category_colors = dict(zip(unique_classes, colors_hex[:len(unique_classes)]))
     category_order = unique_classes
 
-    # Define color mapping for categories (matching the heatmap)
-    # category_colors = {
-    #     '1 Ring Aromatic': '#FFFED0', '2 Ring Aromatic': '#FBDA80', 
-    #     '3 Ring Aromatic': '#F7B659', '4 Ring Aromatic': '#EE6033',
-    #     '5 Ring Aromatic': '#D53D23', '6+ Ring Aromatic': '#781A26',
-    # }
-    # category_colors = {'DNT': '#FFFED0', 'Non-DNT': '#FBDA80'}
-    
-    # category_colors = {'hepatotoxic': '#FFFED0', 'nontoxic': '#FBDA80'}
-
-    # # Create a more predictable category order
-    # category_order = [
-    #     '1 Ring Aromatic', '2 Ring Aromatic',
-    #     '3 Ring Aromatic', '4 Ring Aromatic', '5 Ring Aromatic', '6+ Ring Aromatic'
-    # ]
-    # category_order = ['DNT','Non-DNT']
-    # category_order = ['Nephrotoxic','Non-nephrotoxic']
-    # category_order = ['hepatotoxic','nontoxic']
-    
     # Create the figure
     plt.figure(figsize=(12, 7))
-    
-    # Create the stripplot
-    # ax = sns.stripplot(x='classification', y='value', data=stripdf, 
-    #                   palette=category_colors, size=8, jitter=True, alpha=0.8,
-    #                   order=category_order)
-    
+
     ax = sns.stripplot(
     x='classification',
     y='value',

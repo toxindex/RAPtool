@@ -98,12 +98,18 @@ def _generate_heatmap(pdf, output_path, project_dir):
         project_dir (pathlib.Path): Path to the project directory containing config.yaml
     """
     # Load project config
-    config_path = project_dir / 'config.yaml'
-    color_threshold = 5  # default value
+    config_path = pathlib.Path("config/projects") / f'{project_dir.name}.yaml'
+
     if config_path.exists():
         with open(config_path, 'r') as f:
             config = yaml.safe_load(f)
-            color_threshold = config.get('heatmap', {}).get('color_threshold', 5)
+            
+    else:
+        with open("config/default.yaml", "r") as f:
+            config = yaml.safe_load(f)
+
+    colors_hex = config['colors']
+    color_threshold = config.get('heatmap', {}).get('color_threshold', 5)
 
     # Pivot and normalize
     pivot_df = pdf.pivot_table(index='name', columns='property_token', values='value', aggfunc='first')
@@ -115,12 +121,6 @@ def _generate_heatmap(pdf, output_path, project_dir):
 
     # Get unique classifications
     unique_classes = sorted(pdf['classification'].astype(str).unique())  # sorted for consistency
-    # Load colors from YAML
-    with open("cache/resources/colormap.yaml", "r") as f:
-        config = yaml.safe_load(f)
-
-    colors_hex = config['colors']
-
     # Safely assign only as many colors as needed
     category_colors = dict(zip(unique_classes, colors_hex[:len(unique_classes)]))
 
