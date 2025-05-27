@@ -36,45 +36,45 @@ def fuzzy_match_properties(input_path,output_path):
 
 projects = ['hepatotoxicity','nephrotoxicity','developmental_neurotoxicity']
 
-# for project in projects:
-#     fuzzy_match_properties(
-#         input_path=cachedir / 'projects' / project / 'chatgpt_selected_features.txt',
-#         output_path=cachedir / 'projects' / project / 'matched_properties.txt')
+for project in projects:
+    fuzzy_match_properties(
+        input_path=cachedir / 'projects' / project / 'chatgpt_selected_features.txt',
+        output_path=cachedir / 'projects' / project / 'matched_properties.txt')
 
-# # parse the chemicals
-# import toxindex.parse_chemicals as parse_chemicals
-# for project in projects:
-#     parse_chemicals.parse_chemicals(
-#         input_path=cachedir / 'projects' / project / 'chemicals.txt',
-#         output_path=cachedir / 'projects' / project / 'parsed_chemicals.csv'
-#     )
+# parse the chemicals
+import toxindex.parse_chemicals as parse_chemicals
+for project in projects:
+    parse_chemicals.parse_chemicals(
+        input_path=cachedir / 'projects' / project / 'chemicals.txt',
+        output_path=cachedir / 'projects' / project / 'parsed_chemicals.csv'
+    )
 
-# # categorize chemicals
-# import toxindex.categorize_chemicals as categorize_chemicals
-# for project in projects:
-#     categorize_chemicals.categorize_chemicals(
-#         input_path=cachedir / 'projects' / project / 'parsed_chemicals.csv',
-#         output_path=cachedir / 'projects' / project 
-#     )
+# categorize chemicals
+import toxindex.categorize_chemicals as categorize_chemicals
+for project in projects:
+    categorize_chemicals.categorize_chemicals(
+        input_path=cachedir / 'projects' / project / 'parsed_chemicals.csv',
+        output_path=cachedir / 'projects' / project 
+    )
 
-# # run predictions
-# import toxindex.predict_chemicals as predict_chemicals
-# for project in projects:
-#     predict_chemicals.predict_chemicals(
-#         input_path=cachedir / 'projects' / project / 'classified_chemicals.csv',
-#         output_path=cachedir / 'projects' / project / 'predictions.parquet'
-#     )
+# run predictions
+import toxindex.predict_chemicals as predict_chemicals
+for project in projects:
+    predict_chemicals.predict_chemicals(
+        input_path=cachedir / 'projects' / project / 'classified_chemicals.csv',
+        output_path=cachedir / 'projects' / project / 'predictions.parquet'
+    )
 
-# # run feature selection
-# import toxindex.select_feature as select_feature
-# for project in projects:
-#     outdir = cachedir / 'projects' / project / 'selected_properties'
-#     outdir.mkdir(exist_ok=True)
-#     select_feature.select_feature(
-#         input_path=cachedir / 'projects' / project / 'predictions.parquet',
-#         output_path= outdir,
-#         max_features=150
-#     )
+# run feature selection
+import toxindex.select_feature as select_feature
+for project in projects:
+    outdir = cachedir / 'projects' / project / 'selected_properties'
+    outdir.mkdir(exist_ok=True)
+    select_feature.select_feature(
+        input_path=cachedir / 'projects' / project / 'predictions.parquet',
+        output_path= outdir,
+        max_features=150
+    )
 
 runtag = 'pilot'
 # build heatmaps
