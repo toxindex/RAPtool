@@ -1,7 +1,7 @@
 {
-  description = "Python 3.10 environment for ttdemo with rdkit and related packages";
+  description = "Python 3 environment for ttdemo with rdkit and related packages";
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
 
   outputs = { self, nixpkgs, ... }: let
     pkgs = nixpkgs.legacyPackages."x86_64-linux";
