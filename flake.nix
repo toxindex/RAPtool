@@ -5,7 +5,7 @@
 
   outputs = { self, nixpkgs, ... }: let
     pkgs = nixpkgs.legacyPackages."x86_64-linux";
-    pythonEnv = pkgs.python310.withPackages (ps: with ps; [
+    pythonEnv = pkgs.python3.withPackages (ps: with ps; [
       rdkit
       pandas
       rapidfuzz
