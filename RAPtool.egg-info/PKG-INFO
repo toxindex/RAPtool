@@ -1,0 +1,53 @@
+Metadata-Version: 2.4
+Name: RAPtool
+Version: 0.1.0
+Summary: A tool for chemical property analysis and prediction
+Author: RAPtool Team
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3.10
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pandas
+Requires-Dist: rapidfuzz
+Requires-Dist: aiohttp
+Requires-Dist: tenacity
+Requires-Dist: pubchempy
+Requires-Dist: pyarrow
+Requires-Dist: fastparquet
+Requires-Dist: seaborn
+Requires-Dist: matplotlib
+Requires-Dist: scikit-learn
+Requires-Dist: fastcluster
+Requires-Dist: cython
+Requires-Dist: blosc2
+Requires-Dist: FuzzyTM
+Requires-Dist: openpyxl
+Requires-Dist: bs4
+Requires-Dist: requests
+Dynamic: author
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# RAPtool
+Retrieval-Augment Prediction tool
+
+
+We are building demonstration projects with different target audiences. Some of the original analysis this is based off of is at analysis for slides at [slides](https://docs.google.com/presentation/u/1/d/1qVXcFiqDb4BzUHOd_m3nPXdWe1adilV8Tk-_kzJkgHs/edit#slide=id.p)
+
+## Resources
+1. ontox workshop slides: https://docs.google.com/presentation/d/1MtB6_1sSu66N7OL4M399w_v0B8BE-NpTK4ZfSl9nbbk/edit#slide=id.p
+
+## Development
+### Getting Started
+
+1. Clone the repo: `git clone https://github.com/insilica/ttdemo.git`
+2. Pull LFS objects: `git lfs pull`
+3. Create a new branch: `git checkout -b your-branch-name`

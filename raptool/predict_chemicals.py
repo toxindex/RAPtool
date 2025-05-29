@@ -1,10 +1,12 @@
 import pandas as pd
+import numpy as np
+from pathlib import Path
+import raptool.utils.chemprop as chemprop
+from typing import List, Dict, Any
+import raptool.utils.simplecache as simplecache
 import logging
-import pathlib
 import time 
-import toxindex.utils.chemprop as chemprop
 import itertools
-import toxindex.utils.simplecache as simplecache
 from tqdm import tqdm
 
 def predict_chemicals(input_path, output_path):
@@ -16,14 +18,14 @@ def predict_chemicals(input_path, output_path):
         output_path (str or pathlib.Path): Path to save the output parquet file with predictions
     """
     # Convert paths to pathlib.Path objects if they're not already
-    input_path = pathlib.Path(input_path)
-    output_path = pathlib.Path(output_path)
+    input_path = Path(input_path)
+    output_path = Path(output_path)
     
     # Read input data
     indf = pd.read_csv(input_path)
     
     # Setup cache for predictions
-    cachedir = pathlib.Path('cache') / 'function_cache' / 'chemprop_predictions_cache'
+    cachedir = Path('cache') / 'function_cache' / 'chemprop_predictions_cache'
     cachedir.mkdir(parents=True, exist_ok=True)
     pred = simplecache.simple_cache(cachedir)(chemprop.chemprop_predict_all)
 
