@@ -1,0 +1,38 @@
+from setuptools import setup, find_packages
+
+setup(
+    name="RAPtool",
+    version="0.1.0",
+    packages=find_packages(),
+    install_requires=[
+        "pandas",
+        "rapidfuzz",
+        "aiohttp",
+        "tenacity",
+        "pubchempy",
+        "pyarrow",
+        "fastparquet",
+        "seaborn",
+        "matplotlib",
+        "scikit-learn",
+        "fastcluster",
+        "cython",
+        "blosc2",
+        "FuzzyTM",
+        "openpyxl",
+        "bs4",
+        "requests",
+    ],
+    author="RAPtool Team",
+    description="A tool for chemical property analysis and prediction",
+    long_description=open("README.md").read(),
+    long_description_content_type="text/markdown",
+    python_requires=">=3.10",
+    classifiers=[
+        "Development Status :: 3 - Alpha",
+        "Intended Audience :: Science/Research",
+        "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python :: 3.10",
+    ],
+    include_package_data=True,
+) 
