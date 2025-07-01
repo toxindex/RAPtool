@@ -1,14 +1,9 @@
 import pubchempy as pcp
 import os
-from rdkit import Chem
-from rdkit.Chem import rdmolops, Descriptors
 import time
-import sys
 import warnings
 import pathlib
 import pandas as pd
-import numpy as np
-from pathlib import Path
 import logging
 import requests
 import raptool.utils.simplecache as simplecache
@@ -89,10 +84,6 @@ def parse_chemicals(input_path, output_path):
         except Exception as e:
             logging.error(f"Error parsing {name}: {e}")
             return None
-
-    # do i still need the following two lines
-    # sc = simplecache.simple_cache(pathlib.Path('cache/function_cache/parse_chemicals'))
-    # parse_chemical = sc(parse_chemical)
 
     results = []
     for name in tqdm(chemical_names, desc="Parsing chemicals", unit="chemical"):
