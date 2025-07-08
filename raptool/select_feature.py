@@ -45,6 +45,8 @@ def select_feature(input_path, output_path, max_features=1000):
         feature_names = sorted(list(feature_names))
         df['is_in_lookup'] = df['property_title'].isin(feature_names)
         df = df[df['is_in_lookup']]
+    else:
+        feature_names = []
 
     classdf = pd.read_csv(input_path.parent / 'classified_chemicals.csv')
     # if 'classification' not in df.columns:
@@ -163,7 +165,7 @@ def select_feature(input_path, output_path, max_features=1000):
         # output_df = output_df.merge(keyword_df, on='property_title',how='left')
         # output_df = output_df.dropna(subset=['keyword_occurrence'])
 
-        print(f"[{method.upper():<15}] Selected {len(output_df):>3} features out of {len(feature_names)}")
+        # print(f"[{method.upper():<15}] Selected {len(output_df):>3} features out of {len(feature_names)}")
 
 
         output_csv_path = output_path / f"{method}_selected_properties.csv"
