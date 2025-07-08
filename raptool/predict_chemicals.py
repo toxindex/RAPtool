@@ -8,6 +8,7 @@ import logging
 import time 
 import itertools
 from tqdm import tqdm
+import pickle
 
 def predict_chemicals(input_path, output_path):
     """
@@ -29,17 +30,43 @@ def predict_chemicals(input_path, output_path):
     cachedir.mkdir(parents=True, exist_ok=True)
     pred = simplecache.simple_cache(cachedir)(chemprop.chemprop_predict_all)
 
+    # Setup failed chemicals cache (now a dict: inchi -> fail count)
+    failed_cache_path = Path('cache') / 'failed_chemicals.pkl'
+    failed_chemicals = dict()
+    if failed_cache_path.exists():
+        try:
+            with open(failed_cache_path, 'rb') as f:
+                failed_chemicals = pickle.load(f)
+            logging.info(f"Loaded {len(failed_chemicals)} failed chemicals from cache")
+        except Exception as e:
+            logging.warning(f"Could not load failed chemicals cache: {e}")
+
     def safe_predict(inchi):
+        # Only skip if failed more than once
+        fail_count = failed_chemicals.get(inchi, 0)
+        if fail_count >= 2:
+            logging.info(f"Skipping chemical (failed {fail_count} times): {inchi[:50]}...")
+            return []
         try:
             return pred(inchi) if inchi else None
         except Exception as e:
             logging.error(f"Error predicting for inchi {inchi}: {e}")
+            # Increment fail count
+            failed_chemicals[inchi] = fail_count + 1
             return []
     
     # Make predictions
     predictions = [safe_predict(inchi) for inchi in tqdm(indf['inchi'])]
     predictions = list(itertools.chain.from_iterable(predictions))
     pdf = pd.DataFrame(predictions)
+    
+    # Save failed chemicals cache
+    try:
+        with open(failed_cache_path, 'wb') as f:
+            pickle.dump(failed_chemicals, f)
+        logging.info(f"Saved {len(failed_chemicals)} failed chemicals to cache")
+    except Exception as e:
+        logging.warning(f"Could not save failed chemicals cache: {e}")
     
     # Extract property info
     pdf['property_title'] = pdf['property'].apply(lambda x: str(x.get('title', ''))).astype(str)
