@@ -13,7 +13,7 @@ fastcluster
 cython
 blosc2
 FuzzyTM
-
+yaml
 openpyxl
 bs4
 requests
