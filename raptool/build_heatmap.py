@@ -9,8 +9,6 @@ from scipy.spatial.distance import pdist
 import logging
 import yaml
 
-import os
-
 logger = logging.getLogger(__name__)
 
 def build_heatmap(input_path, output_path, feature_selection_method=None):
@@ -66,7 +64,8 @@ def build_heatmap(input_path, output_path, feature_selection_method=None):
     # pdf = pdf[pdf['classification'].str.contains("Ring")]
     
     # Generate the heatmap
-    _generate_heatmap(pdf, output_path, input_path.parent)
+    project_dir = input_path.parent / 'config.yaml'
+    _generate_heatmap(pdf, output_path, project_dir)
     
     # Create a csv of the top 10 most activated properties
     top_props_path = output_path.parent / 'top_props.csv'
@@ -127,6 +126,7 @@ def _generate_heatmap(pdf, output_path, project_dir):
     norm_values['substance_class'] = class_series
     row_colors = norm_values['substance_class'].map(category_colors)
     row_colors.name = None
+
     norm_values = norm_values.drop(columns='substance_class')
 
     # Thresholding dendrogram
@@ -139,7 +139,7 @@ def _generate_heatmap(pdf, output_path, project_dir):
     g = sns.clustermap(
         norm_values, cmap="viridis",
         row_colors=row_colors, row_linkage=row_linkage,
-        xticklabels=False, yticklabels=False, 
+        xticklabels=False, yticklabels=True, 
         # linewidths=0.001,
         linecolor='black', col_cluster=True, row_cluster=True,
         figsize=(18, 9),  # Wider figure
@@ -147,8 +147,30 @@ def _generate_heatmap(pdf, output_path, project_dir):
         dendrogram_ratio=(0.1, 0.05),  # Make column dendrogram shorter (was 0.2 by default)
         tree_kws={'linewidths': 0.5}  # Thinner dendrogram lines
     )
+    plt.show()
+    reordered_ind = g.dendrogram_row.reordered_ind
+    row_labels = g.data.index[reordered_ind]
+    
+    color_threshold = 3 # for now.
+    cluster_ids = sch.fcluster(row_linkage, t=color_threshold, criterion='distance')
+    cluster_ids_reordered = cluster_ids[reordered_ind]
+    norm_values_reordered = g.data.iloc[reordered_ind]
+    row_means = norm_values_reordered.mean(axis=1)
+    row_medians = norm_values_reordered.median(axis=1)
 
-    # Hide column dendrogram but still keep clustering
+    gdata_with_class = g.data.copy()
+    gdata_with_class['classification'] = class_series
+    gdata_with_class_reordered = gdata_with_class.iloc[reordered_ind]
+
+    # Save to CSV
+    df = pd.DataFrame({
+        'row_label': row_labels,
+        'substance_class': gdata_with_class_reordered['classification'].values,
+        'cluster_id': cluster_ids_reordered,
+        'mean': row_means.values,
+        'median': row_medians.values
+    })    
+    df.to_csv(output_path.parent / 'heatmap_labels.csv', index=False, header=False)    # Hide column dendrogram but still keep clustering
     g.ax_col_dendrogram.set_visible(False)
 
     # Now manually color the dendrogram using scipy's dendrogram and the same axes
