@@ -37,14 +37,14 @@ def select_feature(input_path, output_path, max_features=1000):
     # feature_path = input_path.parent / 'matched_properties.txt'
     # feature_names = set(line.strip() for line in pathlib.Path(feature_path).read_text().splitlines() if line.strip())
     # feature_names = sorted(list(feature_names))
-    feature_path = input_path.parent / 'chatgpt_selected_features.csv'
-    feature_names = pd.read_csv(feature_path)
     # feature_names = feature_names[feature_names['keyword_occurrence'] > 0]
-    feature_names = feature_names['property_title']
 
-
-    df['is_in_lookup'] = df['property_title'].isin(feature_names)
-    df = df[df['is_in_lookup']]
+    feature_path = input_path.parent / 'matched_properties.txt'
+    if feature_path.exists():
+        feature_names = set(line.strip() for line in pathlib.Path(feature_path).read_text().splitlines() if line.strip())
+        feature_names = sorted(list(feature_names))
+        df['is_in_lookup'] = df['property_title'].isin(feature_names)
+        df = df[df['is_in_lookup']]
 
     classdf = pd.read_csv(input_path.parent / 'classified_chemicals.csv')
     # if 'classification' not in df.columns:
