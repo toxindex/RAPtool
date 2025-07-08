@@ -139,7 +139,7 @@ def _generate_heatmap(pdf, output_path, project_dir):
     g = sns.clustermap(
         norm_values, cmap="viridis",
         row_colors=row_colors, row_linkage=row_linkage,
-        xticklabels=False, yticklabels=True, 
+        xticklabels=False, yticklabels=False, 
         # linewidths=0.001,
         linecolor='black', col_cluster=True, row_cluster=True,
         figsize=(18, 9),  # Wider figure

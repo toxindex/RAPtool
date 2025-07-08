@@ -32,28 +32,28 @@ def run_pipeline():
             input_path=cachedir / 'projects' / project / 'chatgpt_selected_features.txt',
             output_path=cachedir / 'projects' / project / 'matched_properties.txt')
 
-    import toxindex.parse_chemicals as parse_chemicals
+    import raptool.parse_chemicals as parse_chemicals
     for project in projects:
         parse_chemicals.parse_chemicals(
             input_path=cachedir / 'projects' / project / 'chemicals.txt',
             output_path=cachedir / 'projects' / project / 'parsed_chemicals.csv'
         )
 
-    import toxindex.categorize_chemicals as categorize_chemicals
+    import raptool.categorize_chemicals as categorize_chemicals
     for project in projects:
         categorize_chemicals.categorize_chemicals(
             input_path=cachedir / 'projects' / project / 'parsed_chemicals.csv',
             output_path=cachedir / 'projects' / project 
         )
 
-    import toxindex.predict_chemicals as predict_chemicals
+    import raptool.predict_chemicals as predict_chemicals
     for project in projects:
         predict_chemicals.predict_chemicals(
             input_path=cachedir / 'projects' / project / 'classified_chemicals.csv',
             output_path=cachedir / 'projects' / project / 'predictions.parquet'
         )
 
-    import toxindex.select_feature as select_feature
+    import raptool.select_feature as select_feature
     for project in projects:
         outdir = cachedir / 'projects' / project / 'selected_properties'
         outdir.mkdir(exist_ok=True)
@@ -64,7 +64,7 @@ def run_pipeline():
         )
 
     runtag = 'pilot'
-    import toxindex.build_heatmap as build_heatmap
+    import raptool.build_heatmap as build_heatmap
     for project in projects:
         outdir = cachedir / 'projects' / project / 'heatmap_dir'
         outdir.mkdir(exist_ok=True)
@@ -76,7 +76,7 @@ def run_pipeline():
             )
 
     feature_selection_method = 'mutual_info'
-    import toxindex.build_stripchart as build_stripchart
+    import raptool.build_stripchart as build_stripchart
     for project in projects:
         outdir = cachedir / 'projects' / project / 'stripchart_dir'
         outdir.mkdir(exist_ok=True)

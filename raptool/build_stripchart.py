@@ -86,24 +86,25 @@ def build_stripchart(input_path, output_path, agg_func, feature_selection_method
     )
 
     classes = df['classification'].unique()
-    if len(classes) != 2:
-        raise ValueError("T-test requires exactly two groups for comparison.")
 
-    # Split the groups
-    group_a = stripdf[stripdf['classification'] == classes[0]]['value']
-    group_b = stripdf[stripdf['classification'] == classes[1]]['value']
+    if len(classes) == 2:
+        # Split the groups
+        group_a = stripdf[stripdf['classification'] == classes[0]]['value']
+        group_b = stripdf[stripdf['classification'] == classes[1]]['value']
 
-    # Perform independent t-test (assume unequal variance just to be safe)
-    t_stat, p_value = ttest_ind(group_a, group_b, equal_var=False)
+        # Perform independent t-test (assume unequal variance just to be safe)
+        t_stat, p_value = ttest_ind(group_a, group_b, equal_var=False)
 
-    print(f"T-statistic: {t_stat:.4f}")
-    print(f"P-value: {p_value:.4e}")
+        print(f"T-statistic: {t_stat:.4f}")
+        print(f"P-value: {p_value:.4e}")
 
-    # Check for significance (e.g., alpha = 0.05)
-    if p_value < 0.05:
-        print("Result: Significant difference between groups")
+        # Check for significance (e.g., alpha = 0.05)
+        if p_value < 0.05:
+            print("Result: Significant difference between groups")
+        else:
+            print("Result: No significant difference between groups")
     else:
-        print("Result: No significant difference between groups")
+        print(f"Skipping T-test: requires exactly two groups, found {len(classes)}.")
     
     # Add horizontal lines for means
     if agg_func == 'mean':
