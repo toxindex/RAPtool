@@ -6,8 +6,6 @@ from sklearn.preprocessing import MinMaxScaler
 import scipy.cluster.hierarchy as sch
 from scipy.spatial.distance import pdist
 
-from rdkit import Chem
-from rdkit.Chem import Draw, AllChem
 import logging
 import yaml
 
