@@ -1,12 +1,74 @@
-<<<<<<< HEAD
-miniconda.sh
-toxindex/__pycache__/*
+# Environment and configuration
 .env
+*.env
+
+# Python
 *.pyc
-scratch.py
-py4cytoscape.logs
+__pycache__/
+*.pyo
+*.pyd
+.Python
+*.so
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Cache and generated data
+cache/
+*.cache
+
+# Generated images and plots
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.pdf
+
+# Generated data files
+*.csv
+*.parquet
+*.json
+*.pkl
+*.pickle
+
+# Logs
+*.log
 logs/
-=======
-.env
-*.pyc
+py4cytoscape.logs
+
+# Temporary files
 scratch.py
+*.tmp
+*.temp
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# conda
+miniconda.sh
