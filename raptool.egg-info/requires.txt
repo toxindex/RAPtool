@@ -1,0 +1,17 @@
+FuzzyTM
+PyYAML
+aiohttp
+blosc2
+bs4
+cython
+fastcluster
+fastparquet
+matplotlib
+openpyxl
+pubchempy
+pyarrow
+rapidfuzz
+rdkit
+scikit-learn
+seaborn
+tenacity

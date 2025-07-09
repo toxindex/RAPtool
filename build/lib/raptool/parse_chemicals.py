@@ -14,15 +14,13 @@ from rdkit import rdBase
 rdBase.DisableLog('rdApp.warning')
 warnings.filterwarnings("ignore", category=UserWarning, module='rdkit')
 
-def parse_chemicals(input_path, output_path, cache_dir=None):
+def parse_chemicals(input_path, output_path):
     """
     Parse chemical names from a file and retrieve their information from PubChem.
     
     Args:
         input_path (str): Path to the file containing chemical names
         output_path (str): Path to save the output CSV file
-        cache_dir (str or Path, optional): Directory for caching results. 
-                                         If None, uses default 'cache/function_cache/parse_chemicals'
     """
     # Ensure output directory exists
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
@@ -61,13 +59,8 @@ def parse_chemicals(input_path, output_path, cache_dir=None):
         best = records[0][0]
         return {"name": query, "cid": best.cid, "inchi": best.inchi}
 
-    # Use provided cache_dir or default to hardcoded path
-    if cache_dir is None:
-        cache_dir = pathlib.Path('cache/function_cache/parse_chemicals')
-    else:
-        cache_dir = pathlib.Path(cache_dir)
         
-    @simplecache.simple_cache(cache_dir)
+    @simplecache.simple_cache(pathlib.Path('cache/function_cache/parse_chemicals'))
     def cached_parse_chemical(name):
         logging.info(f"Parsing chemical: {name}")
         time.sleep(0.33)

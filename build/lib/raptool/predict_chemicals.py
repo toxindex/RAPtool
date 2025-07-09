@@ -8,17 +8,14 @@ import logging
 import time 
 import itertools
 from tqdm import tqdm
-import pickle
 
-def predict_chemicals(input_path, output_path, cache_dir=None):
+def predict_chemicals(input_path, output_path):
     """
     Predict chemical properties using chemprop and save results.
     
     Args:
         input_path (str or pathlib.Path): Path to the input CSV file containing chemicals with 'inchi' column
         output_path (str or pathlib.Path): Path to save the output parquet file with predictions
-        cache_dir (str or Path, optional): Directory for caching results. 
-                                         If None, uses default 'cache/function_cache/chemprop_predictions_cache'
     """
     # Convert paths to pathlib.Path objects if they're not already
     input_path = Path(input_path)
@@ -27,53 +24,22 @@ def predict_chemicals(input_path, output_path, cache_dir=None):
     # Read input data
     indf = pd.read_csv(input_path)
     
-    # Use provided cache_dir or default to hardcoded path
-    if cache_dir is None:
-        cache_dir = Path('cache') / 'function_cache' / 'chemprop_predictions_cache'
-    else:
-        cache_dir = Path(cache_dir)
-    
     # Setup cache for predictions
-    cache_dir.mkdir(parents=True, exist_ok=True)
-    pred = simplecache.simple_cache(cache_dir)(chemprop.chemprop_predict_all)
-
-    # Setup failed chemicals cache (now a dict: inchi -> fail count)
-    failed_cache_path = cache_dir.parent / 'failed_chemicals.pkl'
-    failed_chemicals = dict()
-    if failed_cache_path.exists():
-        try:
-            with open(failed_cache_path, 'rb') as f:
-                failed_chemicals = pickle.load(f)
-            logging.info(f"Loaded {len(failed_chemicals)} failed chemicals from cache")
-        except Exception as e:
-            logging.warning(f"Could not load failed chemicals cache: {e}")
+    cachedir = Path('cache') / 'function_cache' / 'chemprop_predictions_cache'
+    cachedir.mkdir(parents=True, exist_ok=True)
+    pred = simplecache.simple_cache(cachedir)(chemprop.chemprop_predict_all)
 
     def safe_predict(inchi):
-        # Only skip if failed more than once
-        fail_count = failed_chemicals.get(inchi, 0)
-        if fail_count >= 2:
-            logging.info(f"Skipping chemical (failed {fail_count} times): {inchi[:50]}...")
-            return []
         try:
             return pred(inchi) if inchi else None
         except Exception as e:
             logging.error(f"Error predicting for inchi {inchi}: {e}")
-            # Increment fail count
-            failed_chemicals[inchi] = fail_count + 1
             return []
     
     # Make predictions
     predictions = [safe_predict(inchi) for inchi in tqdm(indf['inchi'])]
     predictions = list(itertools.chain.from_iterable(predictions))
     pdf = pd.DataFrame(predictions)
-    
-    # Save failed chemicals cache
-    try:
-        with open(failed_cache_path, 'wb') as f:
-            pickle.dump(failed_chemicals, f)
-        logging.info(f"Saved {len(failed_chemicals)} failed chemicals to cache")
-    except Exception as e:
-        logging.warning(f"Could not save failed chemicals cache: {e}")
     
     # Extract property info
     pdf['property_title'] = pdf['property'].apply(lambda x: str(x.get('title', ''))).astype(str)
