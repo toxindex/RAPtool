@@ -1,9 +1,9 @@
 import pandas as pd
 import numpy as np
 from pathlib import Path
-import raptool.utils.chemprop as chemprop
+import RAPtool.utils.chemprop as chemprop
 from typing import List, Dict, Any
-import raptool.utils.simplecache as simplecache
+import RAPtool.utils.simplecache as simplecache
 import logging
 import time 
 import itertools

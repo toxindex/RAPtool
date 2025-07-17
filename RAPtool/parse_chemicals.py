@@ -6,7 +6,7 @@ import pathlib
 import pandas as pd
 import logging
 import requests
-import raptool.utils.simplecache as simplecache
+import RAPtool.utils.simplecache as simplecache
 from tqdm import tqdm
 
 # Suppress RDKit warnings for cleaner output (optional)
